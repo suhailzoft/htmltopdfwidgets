@@ -9,8 +9,7 @@ Widget defaultIndex(int index,
     required List<Font> fontFallback,
     required HtmlTagStyle customStyles}) {
   return Container(
-    width: 20,
-    padding: const EdgeInsets.only(right: 5.0),
+    width: 25,
     child: Text('$index.', // Display the index as text.
         style: TextStyle(
           font: font, // Apply the specified font.
