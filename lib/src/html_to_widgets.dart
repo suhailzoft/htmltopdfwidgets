@@ -54,9 +54,7 @@ class WidgetsHTMLDecoder {
   //// Converts the given HTML string to a list of Widgets.
   //// and returns the list of widgets
 
-  Future<List<Widget>> _parseElement(
-    Iterable<dom.Node> domNodes,
-  ) async {
+  Future<List<Widget>> _parseElement(Iterable<dom.Node> domNodes,) async {
     final result = <Widget>[];
     final delta = <TextSpan>[];
     TextAlign? textAlign;
@@ -125,7 +123,9 @@ class WidgetsHTMLDecoder {
           /// Handle special elements (e.g., headings, lists, images)
         }
       } else if (domNode is dom.Text) {
-        if (delta.isNotEmpty && domNode.text.trim().isNotEmpty) {
+        if (delta.isNotEmpty && domNode.text
+            .trim()
+            .isNotEmpty) {
           final newlist = List<TextSpan>.from(delta);
           result.add((SizedBox(
               width: double.infinity,
@@ -159,68 +159,71 @@ class WidgetsHTMLDecoder {
   }
 
   /// Function to parse special HTML elements (e.g., headings, lists, images)
-  Future<Iterable<Widget>> _parseSpecialElements(
-    dom.Element element, {
+  Future<Iterable<Widget>> _parseSpecialElements(dom.Element element, {
     required String type,
   }) async {
     final localName = element.localName;
     switch (localName) {
-      /// Handle heading level 1
+    /// Handle heading level 1
       case HTMLTags.h1:
         return [_parseHeadingElement(element, level: 1)];
 
-      /// Handle heading level 2
+    /// Handle heading level 2
       case HTMLTags.h2:
         return [_parseHeadingElement(element, level: 2)];
 
-      /// Handle heading level 3
+    /// Handle heading level 3
       case HTMLTags.h3:
         return [_parseHeadingElement(element, level: 3)];
 
-      /// Handle heading level 4
+    /// Handle heading level 4
       case HTMLTags.h4:
         return [_parseHeadingElement(element, level: 4)];
 
-      /// Handle heading level 5
+    /// Handle heading level 5
       case HTMLTags.h5:
         return [_parseHeadingElement(element, level: 5)];
 
-      /// Handle heading level 6
+    /// Handle heading level 6
       case HTMLTags.h6:
         return [_parseHeadingElement(element, level: 6)];
 
-      /// Handle unorder list
+    /// Handle unorder list
       case HTMLTags.unorderedList:
         return await _parseUnOrderListElement(element);
 
-      /// Handle ordered list and converts its childrens to widgets
+    /// Handle ordered list and converts its childrens to widgets
       case HTMLTags.orderedList:
         return await _parseOrderListElement(element);
       case HTMLTags.table:
         return await _parseTable(element);
 
-      ///if simple list is found it will handle accoridingly
+    ///if simple list is found it will handle accoridingly
       case HTMLTags.list:
         return await _parseListElement(
           element,
           type: type,
         );
 
-      /// it handles the simple paragraph element
+    /// it handles the simple paragraph element
       case HTMLTags.paragraph:
         return [await _parseParagraphElement(element)];
 
-      /// Handle block quote tag
+    /// Handle block quote tag
       case HTMLTags.blockQuote:
         return await _parseBlockQuoteElement(element);
 
-      /// Handle the image tag
+    /// Handle the image tag
       case HTMLTags.image:
         return [await _parseImageElement(element)];
 
-      /// Handle the line break tag
+    /// Handle the div tag
+      case HTMLTags.div:
+        return [await _parseDivElement(element, type: type)];
 
-      /// if no special element is found it treated as simple parahgraph
+    /// Handle the line break tag
+
+    /// if no special element is found it treated as simple parahgraph
       default:
         return [await _parseParagraphElement(element)];
     }
@@ -238,14 +241,14 @@ class WidgetsHTMLDecoder {
     TextStyle attributes = TextStyle(fontFallback: fontFallback, font: font);
     final List<TextDecoration> decoration = [];
     switch (localName) {
-      /// Handle <bold> element
+    /// Handle <bold> element
       case HTMLTags.bold || HTMLTags.strong:
         attributes = attributes
             .copyWith(fontWeight: FontWeight.bold)
             .merge(customStyles.boldStyle);
         break;
 
-      /// Handle <em> <i> element
+    /// Handle <em> <i> element
       case HTMLTags.italic || HTMLTags.em:
         attributes = attributes
             .copyWith(fontStyle: FontStyle.italic)
@@ -253,18 +256,18 @@ class WidgetsHTMLDecoder {
 
         break;
 
-      /// Handle <u> element
+    /// Handle <u> element
       case HTMLTags.underline:
         decoration.add(TextDecoration.underline);
         break;
 
-      /// Handle <del> element
+    /// Handle <del> element
       case HTMLTags.del:
         decoration.add(TextDecoration.lineThrough);
 
         break;
 
-      /// Handle <span>  <mark> element
+    /// Handle <span>  <mark> element
       case HTMLTags.span || HTMLTags.mark:
         final deltaAttributes = _getDeltaAttributesFromHtmlAttributes(
           element.attributes,
@@ -276,7 +279,7 @@ class WidgetsHTMLDecoder {
         }
         break;
 
-      /// Handle <a> element
+    /// Handle <a> element
       case HTMLTags.anchor:
         final href = element.attributes['href'];
         if (href != null) {
@@ -289,7 +292,7 @@ class WidgetsHTMLDecoder {
         }
         break;
 
-      /// Handle <code> element
+    /// Handle <code> element
       case HTMLTags.code:
         attributes = attributes
             .copyWith(background: const BoxDecoration(color: PdfColors.red))
@@ -310,8 +313,8 @@ class WidgetsHTMLDecoder {
 
     ///will combine style get from the children
     return (
-      textAlign,
-      attributes.copyWith(decoration: TextDecoration.combine(decoration))
+    textAlign,
+    attributes.copyWith(decoration: TextDecoration.combine(decoration))
     );
   }
 
@@ -347,9 +350,7 @@ class WidgetsHTMLDecoder {
   }
 
   ///parse html data and convert to table row
-  Future<TableRow> _parsetableData(
-    dom.Element element,
-  ) async {
+  Future<TableRow> _parsetableData(dom.Element element,) async {
     final List<Widget> nodes = [];
 
     ///iterate over <tr>children
@@ -400,8 +401,8 @@ class WidgetsHTMLDecoder {
     final localName = element.localName;
 
     /// Check if the element is a simple formatting element like <span>, <bold>, or <italic>
-    if (localName == HTMLTags.br) {
-    } else if (HTMLTags.formattingElements.contains(localName)) {
+    if (localName == HTMLTags.br) {} else
+    if (HTMLTags.formattingElements.contains(localName)) {
       final attributes = _parserFormattingElementAttributes(element);
 
       result.add(Text(element.text, style: attributes.$2));
@@ -429,8 +430,7 @@ class WidgetsHTMLDecoder {
   }
 
   /// Function to parse a heading element and return a RichText widget
-  Widget _parseHeadingElement(
-    dom.Element element, {
+  Widget _parseHeadingElement(dom.Element element, {
     required int level,
   }) {
     TextAlign? textAlign;
@@ -456,8 +456,8 @@ class WidgetsHTMLDecoder {
             text: TextSpan(
                 children: delta,
                 style: TextStyle(
-                        fontSize: level.getHeadingSize,
-                        fontWeight: FontWeight.bold)
+                    fontSize: level.getHeadingSize,
+                    fontWeight: FontWeight.bold)
                     .merge(level.getHeadingStyle(customStyles)))));
   }
 
@@ -510,8 +510,7 @@ class WidgetsHTMLDecoder {
   }
 
   /// Function to parse a list element (unordered or ordered) and return a list of widgets
-  Future<Iterable<Widget>> _parseListElement(
-    dom.Element element, {
+  Future<Iterable<Widget>> _parseListElement(dom.Element element, {
     required String type,
     int? index,
   }) async {
@@ -626,7 +625,7 @@ class WidgetsHTMLDecoder {
         }
       } else {
         final attributes =
-            _getDeltaAttributesFromHtmlAttributes(element.attributes);
+        _getDeltaAttributesFromHtmlAttributes(element.attributes);
         textAlign = attributes.$1;
 
         /// Process text nodes and add them to delta variable
@@ -647,6 +646,96 @@ class WidgetsHTMLDecoder {
       ...childNodes
     ]);
   }
+
+  Future<Widget> _parseDivElement(dom.Element element, {
+    required String type,
+  }) async {
+    final styles = _getStylesFromHtml(element);
+    final bgColor = styles['background-color'] as PdfColor;
+    final padding = styles['padding'] as EdgeInsets;
+    final delta = <TextSpan>[];
+    final children = element.nodes.toList();
+    final childNodes = <Widget>[];
+    TextAlign? textAlign;
+    for (final child in children) {
+      if (child is dom.Element) {
+        if (child.children.isNotEmpty &&
+            HTMLTags.formattingElements.contains(child.localName) == false) {
+          childNodes.addAll(await _parseElement(child.children));
+        } else {
+          if (HTMLTags.specialElements.contains(child.localName)) {
+            childNodes.addAll(
+              await _parseSpecialElements(
+                child,
+                type: BuiltInAttributeKey.bulletedList,
+              ),
+            );
+          } else {
+            if (child.localName == HTMLTags.br) {
+              delta.add(const TextSpan(
+                text: "\n",
+              ));
+            } else {
+              final attributes = _parserFormattingElementAttributes(child);
+              textAlign = attributes.$1;
+
+              delta.add(TextSpan(
+                  text: "${child.text.replaceAll(RegExp(r'\n+$'), ' ')} ",
+                  style: attributes.$2.merge(customStyles.paragraphStyle)));
+            }
+          }
+        }
+      } else {
+        final attributes =
+        _getDeltaAttributesFromHtmlAttributes(element.attributes);
+        textAlign = attributes.$1;
+        delta.add(TextSpan(
+            text: child.text?.replaceAll(RegExp(r'\n+$'), '') ?? "",
+            style: attributes.$2
+                .copyWith(font: font, fontFallback: fontFallback)
+                .merge(customStyles.paragraphStyle)));
+      }
+    }
+    return Container(
+        color: bgColor,
+        child: Padding(
+          padding: padding,
+          child: Wrap(children: [
+            ...childNodes
+          ],
+          ),
+        )
+    );
+  }
+
+  Map<String, dynamic> _getStylesFromHtml(dom.Element element) {
+    final style = element.attributes['style'] ?? '';
+
+    final styles = <String, dynamic>{};
+
+    final backgroundColorRegExp = RegExp(
+        r'background-color:\s*#([A-Fa-f0-9]{6})');
+    final backgroundColorMatch = backgroundColorRegExp.firstMatch(style);
+    if (backgroundColorMatch != null) {
+      final colorHex = backgroundColorMatch.group(1)!;
+      print("asdasd ${colorHex}");
+      styles['background-color'] = PdfColor.fromInt(int.parse('0xFF$colorHex'));
+    } else {
+      styles['background-color'] = PdfColor.fromInt(int.parse('0xFFRRGGBB'));
+    }
+
+    final paddingRegExp = RegExp(r'padding:\s*(\d+)px');
+    final paddingMatch = paddingRegExp.firstMatch(style);
+    if (paddingMatch != null) {
+      final paddingValue = int.parse(paddingMatch.group(1)!);
+      styles['padding'] = EdgeInsets.all(paddingValue.toDouble());
+    } else {
+      styles['padding'] = EdgeInsets.zero;
+    }
+
+    return styles;
+  }
+
 
   /// Utility function to convert a CSS string to a map of CSS properties
   static Map<String, String> _cssStringToMap(String? cssString) {
@@ -697,7 +786,7 @@ class WidgetsHTMLDecoder {
     if (textDecorationStr != null) {
       style = style.copyWith(
           decoration:
-              _assignTextDecorations(style, textDecorationStr).decoration);
+          _assignTextDecorations(style, textDecorationStr).decoration);
     }
 
     ///apply background color on text
@@ -712,7 +801,7 @@ class WidgetsHTMLDecoder {
     ///apply background color on text
     final colorstr = cssMap["color"];
     final color =
-        colorstr == null ? null : ColorExtension.tryFromRgbaString(colorstr);
+    colorstr == null ? null : ColorExtension.tryFromRgbaString(colorstr);
     if (color != null) {
       style = style.copyWith(color: color);
     }
@@ -750,8 +839,8 @@ class WidgetsHTMLDecoder {
   }
 
   ///this function apply thee text decorations from html inline style css
-  static TextStyle _assignTextDecorations(
-      TextStyle style, String decorationStr) {
+  static TextStyle _assignTextDecorations(TextStyle style,
+      String decorationStr) {
     final decorations = decorationStr.split(" ");
     final textdecorations = <TextDecoration>[];
     for (final d in decorations) {
