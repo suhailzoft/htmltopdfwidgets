@@ -282,13 +282,13 @@ class WidgetsHTMLDecoder {
     /// Handle <a> element
       case HTMLTags.anchor:
         final href = element.attributes['href'];
+        attributes = attributes
+            .copyWith(color: PdfColors.blue)
+            .merge(customStyles.linkStyle);
         if (href != null) {
           decoration.add(
             TextDecoration.underline,
           );
-          attributes = attributes
-              .copyWith(color: PdfColors.blue)
-              .merge(customStyles.linkStyle);
         }
         break;
 
@@ -718,7 +718,6 @@ class WidgetsHTMLDecoder {
     final backgroundColorMatch = backgroundColorRegExp.firstMatch(style);
     if (backgroundColorMatch != null) {
       final colorHex = backgroundColorMatch.group(1)!;
-      print("asdasd ${colorHex}");
       styles['background-color'] = PdfColor.fromInt(int.parse('0xFF$colorHex'));
     } else {
       styles['background-color'] = PdfColor.fromInt(int.parse('0xFFRRGGBB'));
